@@ -646,18 +646,33 @@ function setupShaderAttributes() {
 }
 
 function draw() {
+    //canvas.width = canvas.parentElement.width
+    gl.clearColor(0, 0, 0, 1);
+    gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, imgBuffer.texture);
-
     gl.bindBuffer(gl.ARRAY_BUFFER, imgBuffer.positionBuffer);
-    gl.vertexAttribPointer(shaderProgram.positionAttr, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(shaderProgram.positionAttr, imgBuffer.positionBuffer.itemSize, 
+        gl.FLOAT, false, 0, 0);
+
     gl.bindBuffer(gl.ARRAY_BUFFER, imgBuffer.normalBuffer);
-    gl.vertexAttribPointer(shaderProgram.normalAttr, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(shaderProgram.normalAttr, imgBuffer.normalBuffer.itemSize, 
+        gl.FLOAT, false, 0, 0);
+
+    gl.bindTexture(gl.TEXTURE_2D, imgBuffer.texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('src-tex-img'));
+
+    gl.uniform2fv(shaderProgram.imgSizeUnif, new Float32Array(ImgHelper.getImageSize()));
+    gl.uniform2fv(shaderProgram.minMaxZUnif, new Float32Array([ImgHelper.minZ, ImgHelper.maxZ]));
+    gl.uniform3fv(shaderProgram.lightDir, new Float32Array(lightDir));
+    gl.uniform1i(shaderProgram.texSampler, 0);
+    gl.uniform1i(shaderProgram.textureLighting, textureLighting);
+    gl.uniform1f(shaderProgram.lightIntensity, lightIntensity);
 
     gl.drawArrays(gl.TRIANGLES, 0, imgBuffer.positionBuffer.numItems);
+   
 }
+
 function setupImageSelector() {
     var selector = document.getElementById('image-select');
 
