@@ -83,9 +83,9 @@ var ImgHelper = {
             for (var nidx = 0; nidx < mesh.length; nidx += 3) {
                 var pt = [ mesh[nidx], mesh[nidx + 1], mesh[nidx + 2] ]
                 var normal = getNormalsForPoints(pt, minZ, scale);
-                normals[nidx] = -normal[0];
-                normals[nidx + 1] = -normal[1];
-                normals[nidx + 2] = -normal[2];
+                normals[nidx] = normal[0];
+                normals[nidx + 1] = normal[1];
+                normals[nidx + 2] = normal[2];
             }
             return [mesh, minZ, maxZ, normals];
         }
